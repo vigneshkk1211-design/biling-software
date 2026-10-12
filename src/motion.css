@@ -1,0 +1,136 @@
+:root {
+  --motion-fast: 150ms;
+  --motion-ui: 210ms;
+  --motion-page: 320ms;
+  --motion-ease: cubic-bezier(.2, .8, .2, 1);
+  --motion-spring: cubic-bezier(.18, .9, .25, 1.22);
+}
+
+/* Screen and editorial entrances */
+.screen-transition { animation: screen-settle var(--motion-page) var(--motion-ease) both; }
+.screen-transition .workspace-heading,
+.screen-transition .page-heading { animation: heading-reveal 420ms var(--motion-ease) both; }
+.screen-transition .page-heading h1,
+.screen-transition .workspace-heading h1,
+.screen-transition .menu-board-page > h1 { animation: type-rise 500ms 70ms var(--motion-ease) both; }
+.screen-transition .admin-page > :not(.page-heading) { animation: section-reveal 420ms var(--motion-ease) both; }
+.screen-transition .admin-page > :nth-child(2) { animation-delay: 45ms; }
+.screen-transition .admin-page > :nth-child(3) { animation-delay: 90ms; }
+.screen-transition .admin-page > :nth-child(4) { animation-delay: 135ms; }
+.screen-transition .admin-product-row,
+.screen-transition .history-table article,
+.screen-transition .scheme-admin-card,
+.screen-transition .inventory-list > article,
+.screen-transition .loyalty-list > article,
+.screen-transition .kitchen-columns article { animation: card-reveal 380ms var(--motion-ease) both; animation-delay: calc(var(--tile-index, 0) * 35ms); }
+
+/* Navigation and category controls */
+.pos-navigation button { position: relative; overflow: hidden; transform-origin: left center; }
+.pos-navigation button::before { content: ''; position: absolute; inset: 5px auto 5px 3px; width: 2px; border-radius: 8px; background: var(--pos-accent); opacity: 0; transform: scaleY(.25); transition: transform var(--motion-ui) var(--motion-ease), opacity var(--motion-ui); }
+.pos-navigation button.active::before { opacity: 1; transform: scaleY(1); }
+.pos-navigation button svg { transition: transform var(--motion-ui) var(--motion-spring), color var(--motion-ui); }
+.pos-navigation button:hover svg,
+.pos-navigation button.active svg { transform: translateX(2px) scale(1.05); }
+.category-scroller button { position: relative; overflow: hidden; transform: translateZ(0); }
+.category-scroller button::after { content: ''; position: absolute; left: 18%; right: 18%; bottom: 4px; height: 2px; border-radius: 8px; background: currentColor; opacity: 0; transform: scaleX(.3); transition: transform var(--motion-ui) var(--motion-ease), opacity var(--motion-ui); }
+.category-scroller button.chosen::after { opacity: .8; transform: scaleX(1); }
+
+/* Tactile controls and focused inputs */
+button:not(:disabled) { transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-ui) var(--motion-ease), background var(--motion-ui) var(--motion-ease), border-color var(--motion-ui) var(--motion-ease), color var(--motion-ui) var(--motion-ease), filter var(--motion-ui) var(--motion-ease); }
+button:not(:disabled):active { transform: scale(.965) !important; }
+.pay-button:not(:disabled):hover { box-shadow: 0 10px 22px color-mix(in srgb, var(--pos-accent) 32%, transparent); }
+.admin-button:not(:disabled):hover,
+.held-bills-button:not(:disabled):hover { box-shadow: 0 7px 17px color-mix(in srgb, var(--text) 10%, transparent); }
+.pos-search,
+.customer-field input,
+.editor-form input,
+.editor-form select,
+.editor-form textarea,
+.inventory-adjust-form input,
+.inventory-adjust-form select,
+.loyalty-register input { transition: border-color var(--motion-ui), box-shadow var(--motion-ui), background var(--motion-ui); }
+.pos-search:focus-within,
+.editor-form input:focus,
+.editor-form select:focus,
+.editor-form textarea:focus,
+.inventory-adjust-form input:focus,
+.inventory-adjust-form select:focus,
+.loyalty-register input:focus { border-color: color-mix(in srgb, var(--pos-accent) 70%, var(--border)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pos-accent) 13%, transparent); }
+input[type='checkbox'],
+input[type='radio'] { accent-color: var(--pos-accent); transition: transform var(--motion-fast) var(--motion-spring), filter var(--motion-fast); }
+input[type='checkbox']:checked,
+input[type='radio']:checked { transform: scale(1.12); filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--pos-accent) 35%, transparent)); }
+
+/* Product card depth and add feedback. Pointer tilt is applied only by mouse/pen handlers. */
+.pos-product-card { --tilt-x: 0deg; --tilt-y: 0deg; position: relative; transform-style: preserve-3d; will-change: transform; }
+@media (hover: hover) and (pointer: fine) {
+  .pos-product-card:hover { transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-6px); box-shadow: 0 22px 36px #36251b22; }
+  .pos-product-card:hover .pos-product-photo::after { opacity: 1; transform: translateX(25%); }
+}
+.pos-product-photo::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transform: translateX(-35%); background: linear-gradient(112deg, transparent 36%, #ffffff42 49%, transparent 61%); transition: opacity 280ms ease, transform 620ms var(--motion-ease); }
+.pos-product-card.is-added { border-color: var(--pos-accent); animation: card-confirm 760ms var(--motion-spring) both; }
+.pos-product-card.is-added .pos-product-footer > button { background: #74866b; color: #fff; }
+.card-added-feedback { position: absolute; z-index: 3; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; padding: 6px 8px; border-radius: 999px; background: #31452d; color: #fff; font: 7px var(--mono); letter-spacing: .04em; box-shadow: 0 8px 18px #1d2a1b40; animation: added-float 760ms var(--motion-ease) both; pointer-events: none; }
+
+/* Bill feedback */
+.billing-panel { transition: transform var(--motion-ui) var(--motion-ease), box-shadow var(--motion-ui) var(--motion-ease); }
+.billing-panel:has(.bill-item) { box-shadow: 0 17px 38px #2b1c1438; }
+.bill-item:last-child { animation: line-in 240ms var(--motion-ease), cart-highlight 700ms var(--motion-ease); }
+.bill-total > div > b { display: inline-block; animation: total-pop 300ms var(--motion-spring); }
+.bill-live i,
+.demo-top-pill i { animation: status-ping 1.8s ease-out 1; }
+.bill-quantity button:not(:disabled):active + b,
+.bill-quantity b { transition: transform var(--motion-fast) var(--motion-spring); }
+
+/* Modal, toast, checkout and receipt */
+.pos-modal-backdrop { animation: veil-in 220ms ease both; }
+.pos-modal { animation: premium-modal-in 280ms var(--motion-ease) both; transform-origin: center 35%; }
+.modal-header > button:hover svg { transform: rotate(90deg); transition: transform var(--motion-ui) var(--motion-ease); }
+.payment-methods > button { transition: transform var(--motion-ui) var(--motion-ease), border-color var(--motion-ui), box-shadow var(--motion-ui), background var(--motion-ui); }
+.payment-methods > button:hover { transform: translateY(-3px); box-shadow: 0 9px 16px #38282012; }
+.payment-methods > button.selected { animation: selection-pulse 420ms var(--motion-spring); }
+.payment-receipt-preview .bill-total > div > b { animation: payable-glow 1.1s var(--motion-ease) both; }
+.receipt-paper { position: relative; animation: receipt-success 480ms var(--motion-ease) both; }
+.receipt-paper::before { content: '✓'; position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #71835f; color: #fff; font: 14px 'DM Sans', sans-serif; animation: success-check 520ms 180ms var(--motion-spring) both; }
+.pos-toast { animation: toast-lift 340ms var(--motion-spring) both; }
+.pos-empty-state > span,
+.bill-empty .empty-scoop { animation: empty-rise 520ms var(--motion-ease) both; }
+
+@keyframes screen-settle { from { opacity: 0; transform: translateY(-12px) scale(.995); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes heading-reveal { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes type-rise { from { opacity: 0; transform: translateY(18px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0 0); } }
+@keyframes section-reveal { from { opacity: 0; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes card-reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes card-confirm { 0% { transform: scale(1); } 38% { transform: scale(1.018); } 100% { transform: scale(1); } }
+@keyframes added-float { 0% { opacity: 0; transform: translateY(7px) scale(.82); } 22%, 72% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-8px) scale(.96); } }
+@keyframes cart-highlight { 0% { background: transparent; } 45% { background: #ffffff0d; } 100% { background: transparent; } }
+@keyframes total-pop { 0% { transform: scale(.94); } 60% { transform: scale(1.045); } 100% { transform: scale(1); } }
+@keyframes status-ping { 0% { box-shadow: 0 0 0 0 #8bb28350; } 100% { box-shadow: 0 0 0 7px transparent; } }
+@keyframes premium-modal-in { from { opacity: 0; transform: translateY(15px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes selection-pulse { 0% { transform: scale(.96); } 70% { transform: scale(1.025); } 100% { transform: scale(1); } }
+@keyframes payable-glow { 0% { opacity: .5; transform: scale(.95); } 70% { opacity: 1; transform: scale(1.04); text-shadow: 0 0 18px #c67d7270; } 100% { transform: scale(1); } }
+@keyframes receipt-success { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes success-check { from { opacity: 0; transform: scale(0) rotate(-30deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes toast-lift { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes empty-rise { from { opacity: 0; transform: translateY(8px) scale(.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.pos-modal-backdrop.is-closing { animation: veil-out 180ms ease both; pointer-events: none; }
+.pos-modal-backdrop.is-closing .pos-modal { animation: premium-modal-out 180ms var(--motion-ease) both; }
+@keyframes veil-out { to { opacity: 0; } }
+@keyframes premium-modal-out { to { opacity: 0; transform: translateY(10px) scale(.96); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-transition,
+  .screen-transition *,
+  .pos-product-card,
+  .pos-product-card *,
+  .pos-modal,
+  .pos-modal-backdrop,
+  .pos-toast,
+  .receipt-paper,
+  .receipt-paper::before { animation: none !important; transition-duration: 1ms !important; }
+  .pos-product-card:hover { transform: none; }
+}
+
+@media print {
+  .receipt-paper::before { display: none !important; }
+}
